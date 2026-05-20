@@ -1,0 +1,48 @@
+/* royfw.dev — custom theme */
+
+:root {
+  /* Starlight 主題色覆寫 — 走偏冷色調 + 一點藍 */
+  --sl-hue-accent: 220;
+}
+
+:root[data-theme='dark'] {
+  --sl-color-accent-low: #0d1b2a;
+  --sl-color-accent: #3b82f6;
+  --sl-color-accent-high: #93c5fd;
+}
+
+:root[data-theme='light'] {
+  --sl-color-accent-low: #dbeafe;
+  --sl-color-accent: #2563eb;
+  --sl-color-accent-high: #1e40af;
+}
+
+/* CJK 字體 stack — 系統字體優先,確保繁中顯示乾淨 */
+:root {
+  --sl-font:
+    'Inter', -apple-system, BlinkMacSystemFont, 'Noto Sans TC',
+    'PingFang TC', 'Microsoft JhengHei', 'Helvetica Neue', Helvetica, Arial,
+    sans-serif;
+  --sl-font-mono:
+    'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, 'Liberation Mono', monospace;
+}
+
+/* 內文行距針對中英混排調整 */
+.sl-markdown-content {
+  line-height: 1.75;
+}
+
+/* 表格在窄畫面可橫向捲動,不爆版 */
+.sl-markdown-content table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+@media (min-width: 50rem) {
+  .sl-markdown-content table {
+    display: table;
+    white-space: normal;
+  }
+}

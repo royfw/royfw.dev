@@ -1,0 +1,28 @@
+{
+  "name": "royfw.dev",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check && tsc --noEmit",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,astro,md,mdx,json}\"",
+    "lint": "prettier --check \"**/*.{js,jsx,ts,tsx,astro,md,mdx,json}\""
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.6.0",
+    "@astrojs/starlight": "^0.39.0",
+    "astro": "^6.1.0",
+    "sharp": "^0.34.0",
+    "typescript": "^5.7.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "prettier": "^3.4.0",
+    "prettier-plugin-astro": "^0.14.0"
+  }
+}

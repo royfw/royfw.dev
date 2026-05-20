@@ -1,0 +1,37 @@
+---
+title: royfw.dev
+description: Roy Fang's engineering notes, docs, and projects.
+template: splash
+hero:
+  tagline: Engineering notes, technical docs, and quick captures. A place I write for future me.
+  image:
+    file: ../../../assets/hero.svg
+  actions:
+    - text: Start reading
+      link: /en/guides/getting-started/
+      icon: right-arrow
+      variant: primary
+    - text: GitHub
+      link: https://github.com/royfw
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## What's here
+
+<CardGrid stagger>
+  <Card title="Guides" icon="open-book">
+    Getting-started guides — written for myself the day I first picked up something new.
+  </Card>
+  <Card title="Docs" icon="document">
+    Formal technical docs — config baselines, SOPs, system design decisions.
+  </Card>
+  <Card title="Notes" icon="pencil">
+    Quick captures — one-liner tips, pitfalls I hit, new tools I tried.
+  </Card>
+  <Card title="Projects" icon="rocket">
+    What I'm working on, or done with. Side projects and work output.
+  </Card>
+</CardGrid>

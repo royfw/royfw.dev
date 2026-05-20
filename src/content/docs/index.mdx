@@ -1,0 +1,37 @@
+---
+title: royfw.dev
+description: Roy Fang 的工程筆記、文件與專案紀錄。
+template: splash
+hero:
+  tagline: 工程筆記、技術文件、隨手紀錄。一個寫給未來自己看的地方。
+  image:
+    file: ../../assets/hero.svg
+  actions:
+    - text: 開始閱讀
+      link: /guides/getting-started/
+      icon: right-arrow
+      variant: primary
+    - text: GitHub
+      link: https://github.com/royfw
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## 這裡有什麼
+
+<CardGrid stagger>
+  <Card title="Guides" icon="open-book">
+    從零開始的入門指南。寫給剛踩進新領域的自己。
+  </Card>
+  <Card title="Docs" icon="document">
+    正式技術文件 — 配置基準、SOP、系統設計決策。
+  </Card>
+  <Card title="Notes" icon="pencil">
+    隨手紀錄 — 一行 tip、踩坑回憶、新工具試用心得。
+  </Card>
+  <Card title="Projects" icon="rocket">
+    手上正在做、或做完的東西。Side projects 跟工作成果。
+  </Card>
+</CardGrid>

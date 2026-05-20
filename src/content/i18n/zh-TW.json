@@ -1,0 +1,15 @@
+{
+  "skipLink.label": "跳至主要內容",
+  "search.label": "搜尋",
+  "search.shortcutLabel": "(按下 / 鍵開啟)",
+  "themeSelect.accessibleLabel": "選取主題",
+  "languageSelect.accessibleLabel": "選取語言",
+  "tableOfContents.onThisPage": "本頁目錄",
+  "tableOfContents.overview": "概觀",
+  "page.editLink": "在 GitHub 上編輯此頁",
+  "page.lastUpdated": "最後更新:",
+  "page.previousLink": "上一頁",
+  "page.nextLink": "下一頁",
+  "page.draft": "此內容為草稿,不會包含在正式建置中。",
+  "404.text": "頁面不存在。確認網址或從首頁開始。"
+}

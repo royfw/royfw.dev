@@ -1,0 +1,146 @@
+---
+title: Qwen3.6-27B LiteLLM / Claude Code 配置基準
+description: 6 個 alias、Claude Code 路由、設計理由與部署 checklist。
+sidebar:
+  order: 1
+  badge:
+    text: v1.2
+    variant: tip
+lastUpdated: 2026-05-13
+---
+
+import { Aside, Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+
+**Backend:** vLLM @ `http://<VLLM_HOST>:18000/v1`
+**Model:** `qwen3.6-27b-fp8`
+
+<Aside type="note" title="這篇文件的用途">
+  這是 LiteLLM + Claude Code 串 Qwen3.6-27B 的正式配置基準。團隊任何人要部署、調整、或改 alias
+  都以這份為準。
+</Aside>
+
+## Alias 總覽
+
+| Alias                    | 用途                                | thinking | temp | top_p | max_out | max_in | timeout |
+| ------------------------ | ----------------------------------- | -------: | ---: | ----: | ------: | -----: | ------: |
+| `qwen3.6-27b-code-act`   | Claude Code / OpenCode / Codex 改檔 |      off |  0.5 |   0.9 |   16384 | 245760 |     600 |
+| `qwen3.6-27b-code-think` | 規劃、debug、架構分析               |       on |  0.6 |  0.95 |   24576 | 237568 |     600 |
+| `qwen3.6-27b-stable`     | OpenClaw、通用分析                  |       on |  0.6 |  0.95 |   16384 | 245760 |     600 |
+| `qwen3.6-27b-strict`     | JSON / tool / 風控規則              |      off |  0.5 |   0.9 |    8192 | 245760 |     600 |
+| `qwen3.6-27b-fast`       | 摘要、翻譯、快速問答                |      off |  0.7 |   0.8 |    4096 | 245760 |     600 |
+| `qwen3.6-27b-report`     | 長篇研究、報告                      |       on |  1.0 |  0.95 |   32768 | 229376 | **900** |
+
+**統一價格:** input `$0.32 / 1M`,output `$3.20 / 1M`
+**Backend context cap:** 262144(所有 alias 滿足 `max_in + max_out ≤ 262144`)
+
+## LiteLLM 配置範例
+
+<Tabs syncKey="alias">
+  <TabItem label="code-act">
+    ```json title="LiteLLM Params"
+    {
+      "model": "vllm/qwen3.6-27b-fp8",
+      "api_base": "http://<VLLM_HOST>:18000/v1",
+      "custom_llm_provider": "hosted_vllm",
+      "max_tokens": 16384,
+      "max_input_tokens": 245760,
+      "temperature": 0.5,
+      "top_p": 0.9,
+      "timeout": 600,
+      "extra_body": {
+        "top_k": 20,
+        "chat_template_kwargs": { "enable_thinking": false }
+      }
+    }
+    ```
+  </TabItem>
+  <TabItem label="code-think">
+    ```json title="LiteLLM Params"
+    {
+      "model": "vllm/qwen3.6-27b-fp8",
+      "api_base": "http://<VLLM_HOST>:18000/v1",
+      "custom_llm_provider": "hosted_vllm",
+      "max_tokens": 24576,
+      "max_input_tokens": 237568,
+      "temperature": 0.6,
+      "top_p": 0.95,
+      "timeout": 600,
+      "extra_body": {
+        "chat_template_kwargs": { "enable_thinking": true }
+      }
+    }
+    ```
+  </TabItem>
+  <TabItem label="report">
+    ```json title="LiteLLM Params"
+    {
+      "model": "vllm/qwen3.6-27b-fp8",
+      "api_base": "http://<VLLM_HOST>:18000/v1",
+      "custom_llm_provider": "hosted_vllm",
+      "max_tokens": 32768,
+      "max_input_tokens": 229376,
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "timeout": 900,
+      "stream_timeout": 180,
+      "extra_body": {
+        "chat_template_kwargs": { "enable_thinking": true }
+      }
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+完整 6 個 alias 的 JSON 見 repo 內 `configs/litellm/`。
+
+## Claude Code `.zshrc`
+
+```bash title="~/.zshrc"
+claude-qwen3.6-27b() {
+    unset ANTHROPIC_API_KEY OPENAI_BASE_URL OPENAI_API_KEY
+    unset AWS_BEARER_TOKEN_BEDROCK CLAUDE_CODE_USE_BEDROCK CLAUDE_CODE_USE_VERTEX
+
+    export ANTHROPIC_BASE_URL="${LITELLM_BASE_URL}"
+    export ANTHROPIC_API_KEY="${LITELLM_API_KEY}"
+    export ANTHROPIC_AUTH_TOKEN="${LITELLM_API_KEY}"
+
+    export ANTHROPIC_MODEL="qwen3.6-27b-code-act"
+    export ANTHROPIC_SMALL_FAST_MODEL="qwen3.6-27b-fast"
+    export ANTHROPIC_DEFAULT_OPUS_MODEL="qwen3.6-27b-code-think"
+    export ANTHROPIC_DEFAULT_SONNET_MODEL="qwen3.6-27b-code-act"
+    export ANTHROPIC_DEFAULT_HAIKU_MODEL="qwen3.6-27b-fast"
+
+    export API_TIMEOUT_MS=900000
+    export CLAUDE_CODE_MAX_OUTPUT_TOKENS=16384
+    export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+
+    claude "$@"
+}
+
+alias cct='ANTHROPIC_MODEL=qwen3.6-27b-code-think CLAUDE_CODE_MAX_OUTPUT_TOKENS=24576 claude'
+alias ccs='ANTHROPIC_MODEL=qwen3.6-27b-stable     CLAUDE_CODE_MAX_OUTPUT_TOKENS=16384 claude'
+alias ccf='ANTHROPIC_MODEL=qwen3.6-27b-fast       CLAUDE_CODE_MAX_OUTPUT_TOKENS=4096  claude'
+```
+
+## 部署 Checklist
+
+<Steps>
+
+1. LiteLLM UI 建立 6 個 alias,參數對齊上表
+
+2. 確認 `LITELLM_BASE_URL` / `LITELLM_API_KEY` 已設於 shell env
+
+3. `.zshrc` 加入 function 與三個 alias
+
+4. 反向代理 `proxy_read_timeout ≥ 900s`(支援 `report`)
+
+5. 測試 `claude-qwen3.6-27b` 能連線、`cct` / `ccs` / `ccf` 切換有效
+
+6. vLLM 服務確認 `--max-model-len 262144` 已啟用
+
+</Steps>
+
+<Aside type="caution" title="避免這些操作">
+  - 直接改現有 alias 名稱(會打壞所有 hardcoded 路徑) - `API_TIMEOUT_MS` 設得比 LiteLLM `timeout` 小
+  - alias 切換時忘了同步 `CLAUDE_CODE_MAX_OUTPUT_TOKENS`
+</Aside>
