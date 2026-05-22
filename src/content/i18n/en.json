@@ -1,3 +1,5 @@
 {
-  "page.editLink": "Edit this page on GitHub"
+  "page.editLink": "Edit this page on GitHub",
+  "page.lastUpdated": "Last updated:",
+  "page.createdDate": "Created on:"
 }

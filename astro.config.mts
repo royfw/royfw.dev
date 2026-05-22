@@ -55,6 +55,11 @@ export default defineConfig({
       // 最後更新時間(需要在 git 環境)
       lastUpdated: true,
 
+      // 自訂元件
+      components: {
+        LastUpdated: './src/components/starlight/LastUpdated.astro',
+      },
+
       // 上下頁
       pagination: true,
 

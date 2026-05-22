@@ -1,0 +1,37 @@
+---
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const route = Astro.locals.starlightRoute as any;
+const { lang, lastUpdated, entry } = route;
+const createdDate = entry.data.date;
+
+const t = Astro.locals.t as any;
+---
+
+{
+  (createdDate || lastUpdated) && (
+    <div class="sl-last-updated-custom">
+      {createdDate && (
+        <p>
+          {t('page.createdDate')}
+          <time datetime={createdDate.toISOString()}>
+            {new Date(createdDate).toLocaleDateString(lang, {
+              dateStyle: 'medium',
+              timeZone: 'UTC',
+            })}
+          </time>
+        </p>
+      )}
+      {lastUpdated && (
+        <p>
+          {t('page.lastUpdated')}
+          <time datetime={lastUpdated.toISOString()}>
+            {lastUpdated.toLocaleDateString(lang, {
+              dateStyle: 'medium',
+              timeZone: 'UTC',
+            })}
+          </time>
+        </p>
+      )}
+    </div>
+  )
+}
