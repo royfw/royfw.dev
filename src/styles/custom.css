@@ -46,3 +46,8 @@
     white-space: normal;
   }
 }
+
+/* 上下頁導航標題字體調小 */
+.pagination-links .link-title {
+  font-size: 1rem;
+}
