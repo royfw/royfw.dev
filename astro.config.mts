@@ -101,6 +101,15 @@ export default defineConfig({
             }
           ]
         },
+        {
+          label: 'VenVia',
+          translations: { 'zh-TW': 'VenVia' },
+          items: [
+            {
+              autogenerate: { directory: 'venvia' },
+            }
+          ]
+        },
       ],
 
       // 程式碼區塊 — Expressive Code 設定
