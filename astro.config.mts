@@ -128,6 +128,10 @@ export default defineConfig({
           tag: 'meta',
           attrs: { name: 'theme-color', content: '#0a0a0a' },
         },
+        {
+          tag: 'script',
+          content: `document.addEventListener('DOMContentLoaded', () => { document.querySelectorAll('a[href^="http"]').forEach(a => { if(!a.target) { a.target = '_blank'; if(!a.rel.includes('noopener')) a.rel += (a.rel ? ' ' : '') + 'noopener noreferrer'; } }); });`,
+        },
       ],
     }),
 

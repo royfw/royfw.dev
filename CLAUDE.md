@@ -61,3 +61,30 @@ No test framework is configured.
 ### Key Configuration File
 
 - `astro.config.mts` — single source of truth for site metadata, sidebar, social links, edit link, Expressive Code settings, and head injections
+
+## Content Conventions
+
+### Internal Links
+
+Starlight resolves relative links against the **page's output path** (which includes a trailing slash per page). Use **absolute paths** for cross-directory links:
+
+- Same directory: `./filename` is OK
+- Cross directory: use `/directory/filename` (absolute), NOT `../other/filename`
+- Example: from `/projects/overview/`, link to `/notes/devops/k8s-lens` not `../../notes/devops/k8s-lens`
+
+### External Links
+
+All external links (`href` starting with `http`) open in a new tab via a global script injected in `astro.config.mts` head config. This covers:
+- Markdown content links (`.sl-markdown-content a[href^="http"]`)
+- Social links in footer
+- **LinkCard component**: must manually add `target="_blank"` prop
+
+### Frontmatter Dates
+
+- `date` — creation date (custom field via schema extend)
+- `lastUpdated` — last edit date (Starlight built-in, also from git if not set)
+- Both are optional; the custom `LastUpdated` component shows whichever is available
+
+### Project Categories
+
+Projects are organized into: **apps**, **tools**, **devops**, **skills**. New project pages go in `src/content/docs/projects/` and are listed in `overview.md`. VenVia organization pages go in `src/content/docs/venvia/`.

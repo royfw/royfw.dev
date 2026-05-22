@@ -11,7 +11,7 @@ sidebar:
 
 | 專案 | 說明 |
 |------|------|
-| [royfw.dev](./royfw-dev) | 個人技術網站，Astro + Starlight |
+| [royfw.dev](/projects/royfw-dev) | 個人技術網站，Astro + Starlight |
 
 ## Tools
 
